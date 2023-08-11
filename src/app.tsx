@@ -11,14 +11,14 @@ const App: Component = () => {
   const [password, setPassword] = createSignal("")
 
   createEffect(() => {
-    console.log(username)
-    console.log(password)
+    console.log(username())
+    console.log(password())
   })
 
   return (
     <div>
-    <input type="text" placeholder="username" class="input w-full max-w-xs" onchange={(e) => setUsername(e.target.value)}/>
-    <input type="text" placeholder="password" class="input w-full max-w-xs" onChange={(e) => setPassword(e.target.value)}/>
+    <input type="text" placeholder="username" class="input w-full max-w-xs" onInput={(e) => setUsername(e.target.value)}/>
+    <input type="text" placeholder="password" class="input w-full max-w-xs" onInput={(e) => setPassword(e.target.value)}/>
   </div>
   );
 };
