@@ -1,5 +1,5 @@
 import { createSignal, type Component, createEffect } from 'solid-js';
-import { } from "../proto/users_pb.js";
+import { UsersClient } from "../proto/users_grpc_web_pb";
 
 const Login: Component = () => {
   const [username, setUsername] = createSignal("")
