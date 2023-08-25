@@ -1,9 +1,11 @@
 import { createSignal, type Component, createEffect } from 'solid-js';
-import { UsersClient } from "../proto/users_grpc_web_pb";
+import {UsersClient} from "../../grpc/users.client";
 
 const Login: Component = () => {
   const [username, setUsername] = createSignal("")
   const [password, setPassword] = createSignal("")
+
+  const userService = new UsersClient("http://localhost:8080");
 
   const handleClick = () => {
     console.log({
