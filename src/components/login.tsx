@@ -17,7 +17,8 @@ const Login: Component = () => {
       password: password()
     }
     const res = await usersClient.login(loginRequest)
-    console.log(res.response)
+    const message = res.response?.message
+    console.log(message)
   }
 
   return (
