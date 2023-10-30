@@ -5,11 +5,15 @@ metadata:
   labels:
     app: lemmy-go-solidjs
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
-    - name: lemmy-solidjs-service
+    - name: http
       port: 80
       targetPort: 80
-      nodePort: 30000
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
   selector:
     app: lemmy-go-solidjs

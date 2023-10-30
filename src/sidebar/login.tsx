@@ -12,7 +12,7 @@ const Login: Component = () => {
   const [username, setUsername] = createSignal("")
   const [password, setPassword] = createSignal("")
 
-  const transport = new GrpcWebFetchTransport({ baseUrl: "http://localhost:8080" })
+  const transport = new GrpcWebFetchTransport({ baseUrl: "https://lemmy-api.likwidsage.com/" })
   const usersClient = new UsersClient(transport);
 
   const handleLogin = async () => {
