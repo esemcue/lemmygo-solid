@@ -4,9 +4,9 @@ metadata:
   name: lemmy-go-ingress
   namespace: default
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod-tls
+    kubernetes.io/ingress.class: traefik
 spec:
-  ingressClassName: traefik
   tls:
     - hosts:
       - lemmy.likwidsage.com
