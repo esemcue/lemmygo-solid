@@ -1,8 +1,9 @@
-import { type Component, createSignal, For, Show } from "solid-js";
+import { type Component, createSignal, Show } from "solid-js";
+import { A } from "@solidjs/router";
 
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
 import { UsersClient } from "../../grpc/users.client";
-import { LoginRequest, LoginResponse } from "../../grpc/users";
+import { LoginRequest } from "../../grpc/users";
 
 import { useUserInfo } from "../store/userInfo";
 import InstanceList from "./instanceList";
@@ -52,7 +53,7 @@ const Login: Component = () => {
         </div>
         <div class="flex">
           <span>
-            Register
+            <A href="/register">Register</A>
           </span>
           <span class="mr-2 ml-2">
             |

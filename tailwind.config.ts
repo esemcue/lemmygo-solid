@@ -7,7 +7,7 @@ const config: Config = {
   },
   themes: ["light", "black"],
   darkTheme: "black",
-  plugins: [require("daisyui")],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
 };
 
 export default config;
