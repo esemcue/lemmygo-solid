@@ -6,7 +6,6 @@ import { RegistrationRequest } from "../../grpc/users";
 const PASSWORD_MIN_CHAR = 6;
 
 export default function Register() {
-  const [username, setUsername] = createSignal("");
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [repeatPassword, setRepeatPassword] = createSignal("");
@@ -18,10 +17,6 @@ export default function Register() {
   const usersClient = new UsersClient(transport);
 
   const handleRegister = async () => {
-    if (!username()) {
-      setError("Username must be set!")
-    }
-
     if (!email()) {
       setError("Email must be set!")
     }
@@ -53,12 +48,6 @@ export default function Register() {
     <div class="prose">
         <h1>Register for an account</h1>
         <div class="label-text-alt text-red">{error()}</div>
-        <div class="mb-2">
-            <label class="label">
-                <span class="label-text text-primary">Username</span>
-            </label>
-            <input name="username" type="text" placeholder="User Name" class="input w-full max-w-xs" onInput={(e) => setUsername(e.target.value)}/>
-        </div>
         <div class="mb-2">
             <label class="label">
                 <span class="label-text text-primary">Email</span>
