@@ -41,7 +41,6 @@ export default function Register() {
     }
 
     const registerRequest: RegistrationRequest = {
-      name: username(),
       password: password(),
       email: email()
     };

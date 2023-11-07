@@ -10,7 +10,7 @@ import InstanceList from "./instanceList";
 
 const Login: Component = () => {
   const [userInfo, setUserInfo] = useUserInfo();
-  const [username, setUsername] = createSignal("");
+  const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
 
   const transport = new GrpcWebFetchTransport({
@@ -20,7 +20,7 @@ const Login: Component = () => {
 
   const handleLogin = async () => {
     const loginRequest: LoginRequest = {
-      name: username(),
+      email: email(),
       password: password(),
     };
     const res = await usersClient.login(loginRequest);
@@ -35,9 +35,9 @@ const Login: Component = () => {
         <div class="mb-1">
           <input
             type="text"
-            placeholder="username"
+            placeholder="email"
             class="input w-full max-w-xs"
-            onInput={(e) => setUsername(e.target.value)}
+            onInput={(e) => setEmail(e.target.value)}
           />
         </div>
         <div class="mb-1">
