@@ -15,7 +15,7 @@ const App: Component = () => {
       <div class="drawer lg:drawer-open">
         <label for="my-drawer" class="btn btn-primary drawer-button">Open drawer</label>
         <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content">
+        <div class="drawer-content ml-3 mt-3">
           <Route>
             <Home />
           </Route>

@@ -17,9 +17,9 @@ import { MessageType } from "@protobuf-ts/runtime";
  */
 export interface LoginRequest {
     /**
-     * @generated from protobuf field: string name = 1;
+     * @generated from protobuf field: string email = 1;
      */
-    name: string;
+    email: string;
     /**
      * @generated from protobuf field: string password = 2;
      */
@@ -39,15 +39,11 @@ export interface LoginResponse {
  */
 export interface RegistrationRequest {
     /**
-     * @generated from protobuf field: string name = 1;
-     */
-    name: string;
-    /**
-     * @generated from protobuf field: string password = 2;
+     * @generated from protobuf field: string password = 1;
      */
     password: string;
     /**
-     * @generated from protobuf field: string email = 3;
+     * @generated from protobuf field: string email = 2;
      */
     email: string;
 }
@@ -64,12 +60,12 @@ export interface RegistrationResponse {
 class LoginRequest$Type extends MessageType<LoginRequest> {
     constructor() {
         super("LoginRequest", [
-            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 1, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<LoginRequest>): LoginRequest {
-        const message = { name: "", password: "" };
+        const message = { email: "", password: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<LoginRequest>(this, message, value);
@@ -80,8 +76,8 @@ class LoginRequest$Type extends MessageType<LoginRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string name */ 1:
-                    message.name = reader.string();
+                case /* string email */ 1:
+                    message.email = reader.string();
                     break;
                 case /* string password */ 2:
                     message.password = reader.string();
@@ -98,9 +94,9 @@ class LoginRequest$Type extends MessageType<LoginRequest> {
         return message;
     }
     internalBinaryWrite(message: LoginRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string name = 1; */
-        if (message.name !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* string email = 1; */
+        if (message.email !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.email);
         /* string password = 2; */
         if (message.password !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.password);
@@ -165,13 +161,12 @@ export const LoginResponse = new LoginResponse$Type();
 class RegistrationRequest$Type extends MessageType<RegistrationRequest> {
     constructor() {
         super("RegistrationRequest", [
-            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "email", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<RegistrationRequest>): RegistrationRequest {
-        const message = { name: "", password: "", email: "" };
+        const message = { password: "", email: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<RegistrationRequest>(this, message, value);
@@ -182,13 +177,10 @@ class RegistrationRequest$Type extends MessageType<RegistrationRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string name */ 1:
-                    message.name = reader.string();
-                    break;
-                case /* string password */ 2:
+                case /* string password */ 1:
                     message.password = reader.string();
                     break;
-                case /* string email */ 3:
+                case /* string email */ 2:
                     message.email = reader.string();
                     break;
                 default:
@@ -203,15 +195,12 @@ class RegistrationRequest$Type extends MessageType<RegistrationRequest> {
         return message;
     }
     internalBinaryWrite(message: RegistrationRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string name = 1; */
-        if (message.name !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.name);
-        /* string password = 2; */
+        /* string password = 1; */
         if (message.password !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.password);
-        /* string email = 3; */
+            writer.tag(1, WireType.LengthDelimited).string(message.password);
+        /* string email = 2; */
         if (message.email !== "")
-            writer.tag(3, WireType.LengthDelimited).string(message.email);
+            writer.tag(2, WireType.LengthDelimited).string(message.email);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
