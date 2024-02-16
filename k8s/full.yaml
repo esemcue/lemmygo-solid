@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lemmygo
+  labels:
+    name: lemmygo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lemmy-go-solid
+  namespace: lemmygo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: lemmy-go-solidjs
+    spec:
+      containers:
+      - name: lemmy-go-solidjs
+        image: registry.gitlab.com/lemmygo/lemmy-go-solidjs:latest
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
+  selector:
+    matchLabels:
+      app: lemmy-go-solidjs
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: lemmygo-service
+  namespace: lemmygo
+spec:
+  selector:
+    app: lemmy-go-solidjs
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lemmy-tls-ingress
+  namespace: lemmygo
+  annotations:
+    spec.ingressClassName: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+spec:
+  rules:
+  - host: lemmy.likwidsage.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: lemmygo-service
+              port:
+                number: 80
+  - host: lemmy-api.likwidsage.com
+    http:
+      paths:
+        - path: /Users/
+          pathType: Prefix
+          backend:
+            service:
+              name: lemmy-go-users-service
+              port:
+                number: 8080
+  tls:
+    - hosts:
+      - lemmy.likwidsage.com
+      - lemmy-api.likwidsage.com      
+      secretName: lemmygo-cert-tls
+
+  
