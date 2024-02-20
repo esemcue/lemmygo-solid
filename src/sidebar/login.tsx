@@ -41,7 +41,7 @@ const Login: Component = () => {
 
   return (
     <>
-      <Show when={Object.keys(userInfo()).length === 0 && !loading()}>
+      <Show when={!userInfo() || (Object.keys(userInfo()).length === 0 && !loading()) }>
         <div class="mb-1">
           <input
             type="text"
@@ -74,7 +74,7 @@ const Login: Component = () => {
         </div>
       </Show>
 
-      <Show when={Object.keys(userInfo()).length > 0}>
+      <Show when={userInfo() && Object.keys(userInfo()).length > 0}>
         <InstanceList />
       </Show>
 

@@ -1,6 +1,6 @@
 import {type Component, For } from 'solid-js';
 import { useUserInfo } from '../store/userInfo';
-import { lemmyInstance, User } from "../store/userInfo.types";
+import { LemmyInstance } from "../store/userInfo.types";
 
 const InstanceList: Component = () => {
   const [userInfo] = useUserInfo();
@@ -9,7 +9,7 @@ const InstanceList: Component = () => {
       Logged In As: <h1 class='font-bold mb-5'>{userInfo().Email}</h1>
       <ul>
         <For each={userInfo().LemmyInstances}>
-          {(lemmy: lemmyInstance) => 
+          {(lemmy: LemmyInstance) => 
             <li>
               {lemmy.Url} - {lemmy.Username} 
             </li>
