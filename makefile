@@ -3,5 +3,5 @@
 deploy: 
 	yarn 
 	yarn build
-	docker build -t registry.gitlab.com/lemmygo/lemmy-go-solidjs .
-	docker push registry.gitlab.com/lemmygo/lemmy-go-solidjs
+	docker build -t registry.gitlab.com/lemmygo/lemmy-go-solid .
+	docker push registry.gitlab.com/lemmygo/lemmy-go-solid
