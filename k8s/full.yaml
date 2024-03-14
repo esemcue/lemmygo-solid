@@ -8,34 +8,34 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lemmy-go-solid
+  name: lemmygo-solid
   namespace: lemmygo
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: lemmy-go-solidjs
+        app: lemmygo-solid
     spec:
       containers:
-      - name: lemmy-go-solidjs
-        image: registry.gitlab.com/lemmygo/lemmy-go-solidjs:latest
-        ports:
-        - containerPort: 80
+        - name: lemmygo-solid
+          image: registry.gitlab.com/lemmygo/lemmygo-solid:latest
+          ports:
+            - containerPort: 80
       imagePullSecrets:
-      - name: regcred
+        - name: regcred
   selector:
     matchLabels:
-      app: lemmy-go-solidjs
+      app: lemmygo-solid
 ---
 apiVersion: v1
 kind: Service
-metadata: 
+metadata:
   name: lemmygo-service
   namespace: lemmygo
 spec:
   selector:
-    app: lemmy-go-solidjs
+    app: lemmygo-solid
   type: NodePort
   ports:
     - name: http
@@ -54,30 +54,28 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
 spec:
   rules:
-  - host: lemmy.likwidsage.com
-    http:
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: lemmygo-service
-              port:
-                number: 80
-  - host: lemmy-api.likwidsage.com
-    http:
-      paths:
-        - path: /Users/
-          pathType: Prefix
-          backend:
-            service:
-              name: lemmy-go-users-service
-              port:
-                number: 8080
+    - host: lemmy.likwidsage.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lemmygo-service
+                port:
+                  number: 80
+    - host: lemmy-api.likwidsage.com
+      http:
+        paths:
+          - path: /Users/
+            pathType: Prefix
+            backend:
+              service:
+                name: lemmygo-users-service
+                port:
+                  number: 8080
   tls:
     - hosts:
-      - lemmy.likwidsage.com
-      - lemmy-api.likwidsage.com      
+        - lemmy.likwidsage.com
+        - lemmy-api.likwidsage.com
       secretName: lemmygo-cert-tls
-
-  
