@@ -1,11 +1,7 @@
-export interface LemmyInstance {
-  Url: string;
-  Username: string;
-  Password: string;
-}
+type Credentials = { [id: string]: string };
 
 export interface User {
   Password: string;
   Email: string;
-  LemmyInstances: LemmyInstance[];
+  Instances: Credentials;
 }
