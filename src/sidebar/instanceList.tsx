@@ -7,6 +7,7 @@ const InstanceList: Component = () => {
   return (
     <>
       Logged In As: <h1 class='font-bold mb-5'>{userInfo().Email}</h1>
+      <Show when={userInfo().Instances}>
         <For each={Object.keys(userInfo().Instances)}>{(instanceKey) => 
           <>
             <div>{instanceKey}</div>
@@ -17,6 +18,7 @@ const InstanceList: Component = () => {
             </ul>
           </>
         }</For>
+      </Show>
     </>
   )
 }

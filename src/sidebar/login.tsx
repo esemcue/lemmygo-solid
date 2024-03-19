@@ -26,16 +26,19 @@ const Login: Component = () => {
       email: email(),
       password: password(),
     };
+
     try {
       const res = await usersClient.login(loginRequest);
       const message = res.response?.message;
+      console.log(message)
       const user = JSON.parse(message);
       setUserInfo(user);
       setLoginFailed(false)
+      setLoading(false)
     } catch (error) {
       setLoginFailed(true)
+      setLoading(false)
     }
-    setLoading(false)
   };
 
 
