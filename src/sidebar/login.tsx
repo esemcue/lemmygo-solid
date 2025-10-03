@@ -2,7 +2,7 @@ import { type Component, createSignal, Show } from "solid-js";
 import { A } from "@solidjs/router";
 
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { UsersClient } from "../../grpc/users.client";
+import { usersClient as UsersClient } from "../../grpc/users.client";
 import { LoginRequest } from "../../grpc/users";
 
 import { useUserInfo } from "../store/userInfo";

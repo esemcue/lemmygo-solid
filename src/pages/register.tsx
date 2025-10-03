@@ -1,6 +1,6 @@
 import { Show, createSignal } from "solid-js";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { UsersClient } from "../../grpc/users.client";
+import { usersClient as UsersClient } from "../../grpc/users.client";
 import { RegistrationRequest } from "../../grpc/users";
 
 const PASSWORD_MIN_CHAR = 6;

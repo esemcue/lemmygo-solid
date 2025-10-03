@@ -1,1 +1,1 @@
-npx protoc --ts_out ./grpc --proto_path ./proto ./proto/*.proto
+npx protoc --ts_out ./grpc --proto_path ../lemmygo-protobufs users.proto

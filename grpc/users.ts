@@ -259,9 +259,9 @@ class RegistrationResponse$Type extends MessageType<RegistrationResponse> {
  */
 export const RegistrationResponse = new RegistrationResponse$Type();
 /**
- * @generated ServiceType for protobuf service Users
+ * @generated ServiceType for protobuf service users
  */
-export const Users = new ServiceType("Users", [
-    { name: "Login", options: {}, I: LoginRequest, O: LoginResponse },
-    { name: "Register", options: {}, I: RegistrationRequest, O: RegistrationResponse }
+export const users = new ServiceType("users", [
+    { name: "login", options: {}, I: LoginRequest, O: LoginResponse },
+    { name: "register", options: {}, I: RegistrationRequest, O: RegistrationResponse }
 ]);

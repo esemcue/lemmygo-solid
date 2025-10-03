@@ -3,7 +3,7 @@
 // tslint:disable
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
-import { Users } from "./users";
+import { users } from "./users";
 import type { RegistrationResponse } from "./users";
 import type { RegistrationRequest } from "./users";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
@@ -12,36 +12,36 @@ import type { LoginRequest } from "./users";
 import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
 import type { RpcOptions } from "@protobuf-ts/runtime-rpc";
 /**
- * @generated from protobuf service Users
+ * @generated from protobuf service users
  */
-export interface IUsersClient {
+export interface IusersClient {
     /**
-     * @generated from protobuf rpc: Login(LoginRequest) returns (LoginResponse);
+     * @generated from protobuf rpc: login(LoginRequest) returns (LoginResponse);
      */
     login(input: LoginRequest, options?: RpcOptions): UnaryCall<LoginRequest, LoginResponse>;
     /**
-     * @generated from protobuf rpc: Register(RegistrationRequest) returns (RegistrationResponse);
+     * @generated from protobuf rpc: register(RegistrationRequest) returns (RegistrationResponse);
      */
     register(input: RegistrationRequest, options?: RpcOptions): UnaryCall<RegistrationRequest, RegistrationResponse>;
 }
 /**
- * @generated from protobuf service Users
+ * @generated from protobuf service users
  */
-export class UsersClient implements IUsersClient, ServiceInfo {
-    typeName = Users.typeName;
-    methods = Users.methods;
-    options = Users.options;
+export class usersClient implements IusersClient, ServiceInfo {
+    typeName = users.typeName;
+    methods = users.methods;
+    options = users.options;
     constructor(private readonly _transport: RpcTransport) {
     }
     /**
-     * @generated from protobuf rpc: Login(LoginRequest) returns (LoginResponse);
+     * @generated from protobuf rpc: login(LoginRequest) returns (LoginResponse);
      */
     login(input: LoginRequest, options?: RpcOptions): UnaryCall<LoginRequest, LoginResponse> {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
         return stackIntercept<LoginRequest, LoginResponse>("unary", this._transport, method, opt, input);
     }
     /**
-     * @generated from protobuf rpc: Register(RegistrationRequest) returns (RegistrationResponse);
+     * @generated from protobuf rpc: register(RegistrationRequest) returns (RegistrationResponse);
      */
     register(input: RegistrationRequest, options?: RpcOptions): UnaryCall<RegistrationRequest, RegistrationResponse> {
         const method = this.methods[1], opt = this._transport.mergeOptions(options);
