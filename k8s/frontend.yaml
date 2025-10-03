@@ -83,13 +83,20 @@ spec:
     - host: lemmy-api.likwidsage.com
       http:
         paths:
-          - path: /Users/
+          - path: /users/
             pathType: Prefix
             backend:
               service:
                 name: lemmygo-users-service
                 port:
                   number: 8080
+          - path: /mpc/
+            pathType: Prefix
+            backend:
+              service:
+                name: lemmygo-mcp-service
+                port:
+                  number: 8090
   tls:
     - hosts:
         - lemmy.likwidsage.com
