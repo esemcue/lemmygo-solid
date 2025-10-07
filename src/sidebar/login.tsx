@@ -7,6 +7,7 @@ import { LoginRequest } from "../../grpc/users";
 
 import { useUserInfo } from "../store/userInfo";
 import InstanceList from "./instanceList";
+import { debugInterceptor } from "../utils/debugInterceptor";
 
 const Login: Component = () => {
   const { userInfo, setUserInfo } = useUserInfo();
@@ -17,6 +18,7 @@ const Login: Component = () => {
 
   const transport = new GrpcWebFetchTransport({
     baseUrl: "https://lemmy-api.likwidsage.com/",
+    interceptors: [debugInterceptor],
   });
   const usersClient = new UsersClient(transport);
 
@@ -30,7 +32,6 @@ const Login: Component = () => {
     try {
       const res = await usersClient.login(loginRequest);
       const message = res.response?.message;
-      console.log("message:", message);
       const user = JSON.parse(message);
       setUserInfo(user);
       setLoginFailed(false);

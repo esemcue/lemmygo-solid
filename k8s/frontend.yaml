@@ -90,7 +90,7 @@ spec:
                 name: lemmygo-users-service
                 port:
                   number: 8080
-          - path: /mpc/
+          - path: /mcp/
             pathType: Prefix
             backend:
               service:

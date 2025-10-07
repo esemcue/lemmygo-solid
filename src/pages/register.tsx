@@ -2,6 +2,7 @@ import { Show, createSignal } from "solid-js";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
 import { usersClient as UsersClient } from "../../grpc/users.client";
 import { RegistrationRequest } from "../../grpc/users";
+import { debugInterceptor } from "../utils/debugInterceptor";
 
 const PASSWORD_MIN_CHAR = 6;
 
@@ -14,6 +15,7 @@ export default function Register() {
 
   const transport = new GrpcWebFetchTransport({
     baseUrl: "https://lemmy-api.likwidsage.com/",
+    interceptors: [debugInterceptor],
   });
   const usersClient = new UsersClient(transport);
 
@@ -23,14 +25,12 @@ export default function Register() {
     }
 
     if (password().length < PASSWORD_MIN_CHAR) {
-      console.log(password());
       setError(
         `Password must be greater than ${PASSWORD_MIN_CHAR} characters!`
       );
     }
 
     if (password() !== repeatPassword()) {
-      console.log(`"${password()}" , "${repeatPassword()}"`);
       setError("Passwords do not match!");
     }
 
@@ -42,11 +42,8 @@ export default function Register() {
       password: password(),
       email: email(),
     };
-    console.log(registerRequest);
     try {
       const res = await usersClient.register(registerRequest);
-      const message = res.response?.message;
-      console.log(message);
       setEmail("");
       setPassword("");
       setRepeatPassword("");
