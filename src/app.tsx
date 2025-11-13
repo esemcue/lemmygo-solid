@@ -1,5 +1,5 @@
-import { createSignal, type Component, createEffect } from "solid-js";
-import { Link, useRoutes, useLocation, NavLink, A } from "@solidjs/router";
+import { type Component } from "solid-js";
+import { useRoutes, useLocation, A } from "@solidjs/router";
 
 import { routes } from "./routes";
 import Home from "./pages/home";
@@ -29,7 +29,7 @@ const App: Component = () => {
               <A href="/">Home</A>
             </li>
             <li>
-              <A href="/mcp">MCP</A>
+              <A href="/recipes">Recipes</A>
             </li>
             <div class="divider"></div>
             <Login />

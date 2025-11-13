@@ -13,7 +13,7 @@ export const routes: RouteDefinition[] = [
     component: lazy(() => import("./pages/register")),
   },
   {
-    path: "/mcp",
+    path: "/recipes",
     component: lazy(() => import("./pages/mcp")),
   },
   {

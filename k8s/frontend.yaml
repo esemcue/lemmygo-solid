@@ -20,6 +20,7 @@ spec:
       containers:
         - name: lemmygo-solid
           image: registry.gitlab.com/lemmygo/lemmygo-solid:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
       imagePullSecrets:

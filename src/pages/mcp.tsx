@@ -1,60 +1,53 @@
-import { createSignal, type Component, createEffect } from "solid-js";
-import { MCPClient } from "mcp-client";
+import { createSignal, type Component } from "solid-js";
 
-type GreetOutput = {
-  greeting: string;
-};
+interface Recipe {
+  title: string;
+  description: string;
+  prepTime: string;
+  cookTime: string;
+  servings: number;
+  ingredients: string[];
+  instructions: string[];
+  tips?: string[];
+}
 
 const MCPPage: Component = () => {
-  const [name, setName] = createSignal("world");
-  const [greeting, setGreeting] = createSignal("");
+  const [data, setData] = createSignal<Recipe | null>(null);
+  const [ingredients, setIngredients] = createSignal("");
   const [loading, setLoading] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
-  const [client, setClient] = createSignal<MCPClient | null>(null);
 
-  createEffect(() => {
-    const mcpClient = new MCPClient({
-      name: "lemmygo-solid",
-      version: "0.1.0",
-    });
-    mcpClient
-      .connect({
-        type: "httpStream",
-        url: "https://lemmy-api.likwidsage.com/mcp/",
-      })
-      .then(() => {
-        setClient(mcpClient);
-      })
-      .catch((e: any) => {
-        setError(e.message || "Failed to connect to MCP server");
-      });
-  });
+  const getRecipe = async (ingredients: string) => {
+    const res = await fetch(
+      "https://lemmy-api.likwidsage.com/mcp/recipeGeneratorFlow",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            ingredient: ingredients,
+          },
+        }),
+      }
+    );
 
-  const callGreet = async () => {
-    const c = client();
-    if (!c) {
-      setError("Client not connected");
-      return;
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
     }
 
+    const json = await res.json();
+    console.log("Recipe data:", json);
+    return json.result;
+  };
+
+  const handleClick = async () => {
     setLoading(true);
     setError(null);
-    setGreeting("");
     try {
-      const result = await c.callTool({
-        name: "greet",
-        arguments: {
-          name: name(),
-        },
-      });
-
-      // Extract greeting from the MCP response format
-      if (result.content && result.content.length > 0) {
-        const textContent = result.content.find((c: any) => c.type === "text");
-        if (textContent && textContent.text) {
-          setGreeting(String(textContent.text));
-        }
-      }
+      const result = await getRecipe(ingredients());
+      setData(result);
     } catch (e: any) {
       setError(e.message || "An unknown error occurred");
     } finally {
@@ -64,25 +57,64 @@ const MCPPage: Component = () => {
 
   return (
     <div>
-      <h1 class="text-2xl font-bold mb-4">MCP Greeter</h1>
       <div class="form-control w-full max-w-xs">
         <input
           type="text"
-          placeholder="Enter a name"
+          placeholder="Enter ingredients"
           class="input input-bordered w-full max-w-xs"
-          value={name()}
-          onInput={(e) => setName(e.currentTarget.value)}
+          value={ingredients()}
+          onInput={(e) => setIngredients(e.currentTarget.value)}
         />
         <button
           class="btn btn-primary mt-2"
-          onClick={callGreet}
-          disabled={loading() || !client()}
+          onClick={handleClick}
+          disabled={loading()}
         >
-          {loading() ? <span class="loading loading-spinner"></span> : "Greet"}
+          {loading() ? (
+            <span class="loading loading-spinner"></span>
+          ) : (
+            "Get Recipe"
+          )}
         </button>
       </div>
-      {greeting() && (
-        <div class="alert alert-success mt-4">Greeting: {greeting()}</div>
+      {data() && (
+        <div class="card bg-base-100 shadow-xl mt-4">
+          <div class="card-body">
+            <h2 class="card-title text-2xl">{data().title}</h2>
+            <p class="text-gray-600">{data().description}</p>
+
+            <div class="flex gap-4 my-2">
+              <div class="badge badge-primary">Prep: {data().prepTime}</div>
+              <div class="badge badge-secondary">Cook: {data().cookTime}</div>
+              <div class="badge badge-accent">Servings: {data().servings}</div>
+            </div>
+
+            <div class="divider">Ingredients</div>
+            <ul class="list-disc list-inside space-y-1">
+              {data().ingredients.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+
+            <div class="divider">Instructions</div>
+            <ol class="list-decimal list-inside space-y-2">
+              {data().instructions.map((step) => (
+                <li class="mb-2">{step}</li>
+              ))}
+            </ol>
+
+            {data().tips && data().tips.length > 0 && (
+              <>
+                <div class="divider">Tips</div>
+                <ul class="list-disc list-inside space-y-1">
+                  {data().tips.map((tip) => (
+                    <li class="text-sm text-gray-600">{tip}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        </div>
       )}
       {error() && <div class="alert alert-error mt-4">{error()}</div>}
     </div>
