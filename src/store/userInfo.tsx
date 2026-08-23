@@ -2,7 +2,7 @@ import {
   createSignal,
   createContext,
   useContext,
-  createEffect,
+  onMount,
   Accessor,
   Setter,
 } from "solid-js";
@@ -11,6 +11,7 @@ import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
 import { usersClient as UsersClient } from "../../grpc/users.client";
 import { UpdateUserRequest } from "../../grpc/users";
 import { debugInterceptor } from "../utils/debugInterceptor";
+import { isValid, loadAuth } from "../services/auth";
 
 interface UserInfoContextType {
   userInfo: Accessor<User>;
@@ -31,6 +32,14 @@ export const UserInfoProvider = (props) => {
 
   const syncUserInfo = async (updatedInfo: User) => {
     if (!updatedInfo) return;
+    
+    // Guard: don't call backend if there's no valid auth token
+    if (!isValid()) {
+      console.warn("⚠️  syncUserInfo skipped — no valid auth token");
+      setUserInfo(updatedInfo);
+      return;
+    }
+    
     setUserInfo(updatedInfo);
     try {
       const request: UpdateUserRequest = {
@@ -43,6 +52,17 @@ export const UserInfoProvider = (props) => {
       console.error("Failed to sync user info:", error);
     }
   };
+
+  // Auto-init: validate stored token on app mount, clear if malformed
+  onMount(() => {
+    console.log("🔄 App mounted — validating stored auth...");
+    const auth = loadAuth();
+    if (!auth) {
+      console.warn("⚠️  No valid auth on mount — showing unauthenticated state");
+      return;
+    }
+    console.log("✅ Auth valid on mount. Token will be attached to outgoing gRPC calls.");
+  });
 
   const userValue = {
     userInfo,

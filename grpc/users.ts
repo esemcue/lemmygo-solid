@@ -33,6 +33,14 @@ export interface LoginResponse {
      * @generated from protobuf field: string message = 1;
      */
     message: string;
+    /**
+     * @custom: manually added to match backend JWT flow (field 2)
+     */
+    token: string;
+    /**
+     * @custom: manually added to match backend JWT flow (field 3)
+     */
+    expiresAt: number;
 }
 /**
  * @generated from protobuf message RegistrationRequest
@@ -136,11 +144,15 @@ export const LoginRequest = new LoginRequest$Type();
 class LoginResponse$Type extends MessageType<LoginResponse> {
     constructor() {
         super("LoginResponse", [
-            { no: 1, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            // @custom: manually added to match backend JWT flow
+            { no: 2, name: "token", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            // @custom: manually added to match backend JWT flow (int64)
+            { no: 3, name: "expiresAt", kind: "scalar", T: 3 /*ScalarType.INT64*/ }
         ]);
     }
     create(value?: PartialMessage<LoginResponse>): LoginResponse {
-        const message = { message: "" };
+        const message = { message: "", token: "", expiresAt: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<LoginResponse>(this, message, value);
@@ -153,6 +165,12 @@ class LoginResponse$Type extends MessageType<LoginResponse> {
             switch (fieldNo) {
                 case /* string message */ 1:
                     message.message = reader.string();
+                    break;
+                case /* string token */ 2:
+                    message.token = reader.string();
+                    break;
+                case /* int64 expiresAt */ 3:
+                    message.expiresAt = reader.int64() as unknown as number;
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -169,6 +187,12 @@ class LoginResponse$Type extends MessageType<LoginResponse> {
         /* string message = 1; */
         if (message.message !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.message);
+        /* string token = 2; */
+        if (message.token !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.token);
+        /* int64 expiresAt = 3; */
+        if (message.expiresAt !== 0)
+            writer.tag(3, WireType.Varint).int64(message.expiresAt as unknown as globalThis.BigInt);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -3,12 +3,13 @@ import { useUserInfo } from "../store/userInfo";
 import { TbTrash } from "solid-icons/tb";
 import { IoAddCircle } from "solid-icons/io";
 import { AiFillSave } from "solid-icons/ai";
+import { clearAuth } from "../services/auth";
 
 const InstanceList: Component = () => {
   const userContext = useUserInfo();
   if (!userContext) return null;
 
-  const { userInfo, syncUserInfo } = userContext;
+  const { userInfo, setUserInfo, syncUserInfo } = userContext;
 
   const [newInstanceName, setNewInstanceName] = createSignal("");
   const [newInstanceUrl, setNewInstanceUrl] = createSignal("");
@@ -65,9 +66,18 @@ const InstanceList: Component = () => {
     syncUserInfo(newUserInfo);
   };
 
+  const handleLogout = () => {
+    clearAuth();
+    // Reset user info so the Login form reappears
+    setUserInfo(null);
+  };
+
   return (
     <>
       Logged In As: <h1 class="font-bold mb-3">{userInfo()?.Email}</h1>
+      <button onClick={handleLogout} class="btn btn-sm btn-error mb-4">
+        Logout
+      </button>
       <div class="mb-4">
         <div class="flex items-center mb-2">
           <button

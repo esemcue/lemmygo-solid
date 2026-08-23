@@ -8,13 +8,15 @@ import { LoginRequest } from "../../grpc/users";
 import { useUserInfo } from "../store/userInfo";
 import InstanceList from "./instanceList";
 import { debugInterceptor } from "../utils/debugInterceptor";
+import { saveToken, setEmail } from "../services/auth";
 
 const Login: Component = () => {
   const { userInfo, setUserInfo } = useUserInfo();
-  const [email, setEmail] = createSignal("");
+  const [email, setEmailLocal] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [loading, setLoading] = createSignal(false);
   const [loginFailed, setLoginFailed] = createSignal(false);
+  const [errorMessage, setErrorMessage] = createSignal("");
 
   const transport = new GrpcWebFetchTransport({
     baseUrl: "https://lemmy-api.likwidsage.com/",
@@ -24,6 +26,9 @@ const Login: Component = () => {
 
   const handleLogin = async () => {
     setLoading(true);
+    setLoginFailed(false);
+    setErrorMessage("");
+
     const loginRequest: LoginRequest = {
       email: email(),
       password: password(),
@@ -31,14 +36,61 @@ const Login: Component = () => {
 
     try {
       const res = await usersClient.login(loginRequest);
-      const message = res.response?.message;
-      const user = JSON.parse(message);
-      setUserInfo(user);
-      setLoginFailed(false);
+      const response = res.response;
+
+      // Debug: dump full response to diagnose proto deserialization
+      console.log("🔍 Full login response object:", JSON.stringify(response, null, 2));
+      console.log("🔍 Response prototype keys:", Object.getOwnPropertyNames(Object.getPrototypeOf(response)));
+      console.log("🔍 Token field check:", {
+        hasTokenProperty: "token" in (response ?? {}),
+        tokenValue: response?.token,
+        tokenType: typeof response?.token,
+        expiresAtValue: response?.expiresAt,
+        expiresAtType: typeof response?.expiresAt,
+      });
+
+      // Persist JWT token for future authenticated requests
+      if (response?.token && response?.expiresAt) {
+        saveToken(response.token, response.expiresAt);
+        setEmail(email());
+        // Debug: verify token was actually saved
+        const verify = localStorage.getItem("lemmygo_auth_token");
+        console.log("✅ Login complete - verifying token in localStorage:", {
+          saved: !!verify,
+          tokenLength: verify ? verify.length : 0,
+          allKeys: Object.keys(localStorage),
+        });
+      } else {
+        console.warn("⚠️ Login response missing token or expiresAt!", {
+          hasToken: !!response?.token,
+          hasExpiresAt: !!response?.expiresAt,
+          message: response?.message,
+        });
+      }
+
+      // Extract user info from the message field (backend returns JSON string)
+      const message = response?.message ?? "";
+      try {
+        const user = JSON.parse(message);
+        setUserInfo(user);
+      } catch {
+        // If message isn't valid JSON, just store a simple object with the email
+        setUserInfo({ Email: email(), Instances: {} });
+      }
+
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Login error:", error);
+      const msg = error?.details ?? error?.toString() ?? "Unknown login error";
+      setErrorMessage(msg);
       setLoginFailed(true);
       setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleLogin();
     }
   };
 
@@ -54,7 +106,9 @@ const Login: Component = () => {
             type="text"
             placeholder="email"
             class="input w-full max-w-xs"
-            onInput={(e) => setEmail(e.target.value)}
+            value={email()}
+            onInput={(e) => setEmailLocal(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
         </div>
         <div class="mb-1">
@@ -63,10 +117,15 @@ const Login: Component = () => {
             placeholder="password"
             class="input w-full max-w-xs"
             onInput={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
         </div>
         <div>
-          <button onClick={handleLogin} class="btn">
+          <button
+            onClick={handleLogin}
+            class="btn btn-primary"
+            disabled={!email() || !password()}
+          >
             Login
           </button>
         </div>
@@ -97,7 +156,7 @@ const Login: Component = () => {
           >
             <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>Error logging in: </span>
+          <span>Error logging in: {errorMessage()}</span>
         </div>
       </Show>
     </>
