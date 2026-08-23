@@ -3,12 +3,12 @@ import { A } from "@solidjs/router";
 
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
 import { usersClient as UsersClient } from "../../grpc/users.client";
-import { LoginRequest } from "../../grpc/users";
+import { LoginRequest, GetUserResponse } from "../../grpc/users";
 
 import { useUserInfo } from "../store/userInfo";
 import InstanceList from "./instanceList";
 import { debugInterceptor } from "../utils/debugInterceptor";
-import { saveToken, setEmail } from "../services/auth";
+import { saveToken, setEmail, getToken } from "../services/auth";
 
 const Login: Component = () => {
   const { userInfo, setUserInfo } = useUserInfo();
@@ -19,7 +19,7 @@ const Login: Component = () => {
   const [errorMessage, setErrorMessage] = createSignal("");
 
   const transport = new GrpcWebFetchTransport({
-    baseUrl: "https://lemmy-api.likwidsage.com/",
+    baseUrl: import.meta.env.VITE_API_BASE_URL || "https://lemmy-api.likwidsage.com/",
     interceptors: [debugInterceptor],
   });
   const usersClient = new UsersClient(transport);
@@ -73,7 +73,52 @@ const Login: Component = () => {
         setUserInfo(user);
       } catch {
         // If message isn't valid JSON, just store a simple object with the email
-        setUserInfo({ Email: email(), Instances: {} });
+        setUserInfo({ Email: email(), Password: "", Instances: {} });
+        console.log("⚠️ Login message wasn't valid JSON — setting fallback user info");
+      }
+
+      // KEY FIX: Fetch full user data (including instances) after successful login
+      // The login response doesn't contain instances, so we need to call getUser
+      console.log("📡 Fetching full user data after login...");
+      const token = getToken();
+      if (token) {
+        try {
+          // Create a new transport with the auth token for this request
+          const authTransport = new GrpcWebFetchTransport({
+            baseUrl: import.meta.env.VITE_API_BASE_URL || "https://lemmy-api.likwidsage.com/",
+            interceptors: [debugInterceptor],
+            sendMetadata: {
+              authorization: `Bearer ${token}`,
+            },
+          });
+          const authClient = new UsersClient(authTransport);
+          const getUserResp = (await authClient.getUser({}) as unknown) as GetUserResponse;
+          console.log("📥 Post-login getUser response:", getUserResp);
+          if (getUserResp.message) {
+            try {
+              const fullUser = JSON.parse(getUserResp.message);
+              if (fullUser && fullUser.Email) {
+                console.log("✅ Restored full user data after login:", {
+                  email: fullUser.Email,
+                  instancesKeys: Object.keys(fullUser.Instances || {}),
+                  instanceCount: Object.keys(fullUser.Instances || {}).length,
+                });
+                setUserInfo(fullUser);
+              } else {
+                console.warn("⚠️ Post-login getUser returned data without Email field");
+              }
+            } catch (parseErr) {
+              console.error("❌ Failed to parse post-login getUser response:", parseErr);
+            }
+          } else {
+            console.warn("⚠️ Post-login getUser response has no message field");
+          }
+        } catch (fetchErr) {
+          console.error("❌ Failed to fetch user data after login:", fetchErr);
+          // Keep the fallback user info if fetch fails
+        }
+      } else {
+        console.warn("⚠️ No token available for post-login getUser call");
       }
 
       setLoading(false);
@@ -137,7 +182,16 @@ const Login: Component = () => {
       </Show>
 
       <Show when={userInfo() && Object.keys(userInfo()).length > 0}>
-        <InstanceList />
+        <>{
+          (() => {
+            console.log("🔍 Login component showing InstanceList. userInfo:", {
+              email: userInfo()?.Email,
+              instancesKeys: Object.keys(userInfo()?.Instances || {}),
+              instanceCount: Object.keys(userInfo()?.Instances || {}).length,
+            });
+            return <InstanceList />;
+          })()
+        }</>
       </Show>
 
       <Show when={loading()}>

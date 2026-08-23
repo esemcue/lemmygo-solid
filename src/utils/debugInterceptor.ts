@@ -66,7 +66,10 @@ export const debugInterceptor: RpcInterceptor = {
           onError?.(makeError());
           return errorCall;
         },
-      };
+        finally: () => {
+          return errorCall;
+        },
+      } as unknown as UnaryCall;
       return errorCall;
     }
 
@@ -89,7 +92,7 @@ export const debugInterceptor: RpcInterceptor = {
         const respKeys = Object.keys(response || {});
         console.log("✅ Response keys:", respKeys);
         respKeys.forEach((k) => {
-          const v = (response as Record<string, unknown>)[k];
+          const v = (response as unknown as Record<string, unknown>)[k];
           console.log(`   ${k}:`, typeof v === "string" ? `${v.substring(0, 60)}${v.length > 60 ? "..." : ""}` : v);
         });
       },

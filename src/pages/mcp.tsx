@@ -19,7 +19,7 @@ const MCPPage: Component = () => {
 
   const getRecipe = async (ingredients: string) => {
     const res = await fetch(
-      "https://lemmy-api.likwidsage.com/mcp/recipeGeneratorFlow",
+      `${import.meta.env.VITE_API_BASE_URL || "https://lemmy-api.likwidsage.com"}/mcp/recipeGeneratorFlow`,
       {
         method: "POST",
         headers: {

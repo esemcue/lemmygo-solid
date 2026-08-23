@@ -14,7 +14,7 @@ export default function Register() {
   const [error, setError] = createSignal(undefined);
 
   const transport = new GrpcWebFetchTransport({
-    baseUrl: "https://lemmy-api.likwidsage.com/",
+    baseUrl: import.meta.env.VITE_API_BASE_URL || "https://lemmy-api.likwidsage.com/",
     interceptors: [debugInterceptor],
   });
   const usersClient = new UsersClient(transport);

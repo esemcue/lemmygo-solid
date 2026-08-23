@@ -8,6 +8,8 @@ import type { UpdateUserResponse } from "./users";
 import type { UpdateUserRequest } from "./users";
 import type { RegistrationResponse } from "./users";
 import type { RegistrationRequest } from "./users";
+import type { GetUserResponse } from "./users";
+import type { GetUserRequest } from "./users";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
 import type { LoginResponse } from "./users";
 import type { LoginRequest } from "./users";
@@ -29,6 +31,10 @@ export interface IusersClient {
      * @generated from protobuf rpc: updateUser(UpdateUserRequest) returns (UpdateUserResponse);
      */
     updateUser(input: UpdateUserRequest, options?: RpcOptions): UnaryCall<UpdateUserRequest, UpdateUserResponse>;
+    /**
+     * @generated from protobuf rpc: getUser(GetUserRequest) returns (GetUserResponse);
+     */
+    getUser(input: GetUserRequest, options?: RpcOptions): UnaryCall<GetUserRequest, GetUserResponse>;
 }
 /**
  * @generated from protobuf service users
@@ -59,5 +65,12 @@ export class usersClient implements IusersClient, ServiceInfo {
     updateUser(input: UpdateUserRequest, options?: RpcOptions): UnaryCall<UpdateUserRequest, UpdateUserResponse> {
         const method = this.methods[2], opt = this._transport.mergeOptions(options);
         return stackIntercept<UpdateUserRequest, UpdateUserResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: getUser(GetUserRequest) returns (GetUserResponse);
+     */
+    getUser(input: GetUserRequest, options?: RpcOptions): UnaryCall<GetUserRequest, GetUserResponse> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetUserRequest, GetUserResponse>("unary", this._transport, method, opt, input);
     }
 }

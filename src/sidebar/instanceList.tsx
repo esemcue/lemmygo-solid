@@ -10,6 +10,8 @@ const InstanceList: Component = () => {
 
   const { userInfo, setUserInfo, syncUserInfo } = userContext;
 
+  console.log("🔍 [InstanceList] Rendered — userInfo:", userInfo());
+
   const [newInstanceName, setNewInstanceName] = createSignal("");
   const [newInstanceUrl, setNewInstanceUrl] = createSignal("");
   const [showAddForm, setShowAddForm] = createSignal(false);
@@ -20,12 +22,19 @@ const InstanceList: Component = () => {
   >(null);
 
   const handleAddInstance = async () => {
-    const newInstances = { ...userInfo()?.Instances };
+    const currentInstances = userInfo()?.Instances || {};
+    // Deep copy: spread the outer map AND each instance's credentials
+    const newInstances: Record<string, any> = {};
+    for (const [k, v] of Object.entries(currentInstances)) {
+      newInstances[k] = { url: v.url, credentials: { ...v.credentials } };
+    }
     newInstances[newInstanceName()] = {
       url: newInstanceUrl(),
       credentials: {},
     };
-    syncUserInfo({ ...userInfo(), Instances: newInstances });
+    const updatedUser = { ...userInfo(), Instances: newInstances };
+    console.log("📤 [InstanceList] handleAddInstance — sending:", JSON.stringify(updatedUser));
+    syncUserInfo(updatedUser);
     //clean up form
     setNewInstanceName("");
     setNewInstanceUrl("");
@@ -33,7 +42,8 @@ const InstanceList: Component = () => {
   };
 
   const removeInstance = (instanceName: string) => {
-    const newInstances = { ...userInfo()?.Instances };
+    const currentInstances = userInfo()?.Instances || {};
+    const newInstances = { ...currentInstances };
     delete newInstances[instanceName];
     syncUserInfo({ ...userInfo(), Instances: newInstances });
   };
@@ -44,25 +54,39 @@ const InstanceList: Component = () => {
     credentialValue: string
   ) => {
     console.log(
-      "Adding credential",
+      "📤 [InstanceList] Adding credential",
       instanceName,
       credentialKey,
       credentialValue
     );
-    const newUserInfo = { ...userInfo() };
-    newUserInfo.Instances[instanceName].credentials[credentialKey] =
-      credentialValue;
-    syncUserInfo(newUserInfo);
+    // Deep copy to avoid mutating original signal state
+    const currentInstances = userInfo()?.Instances || {};
+    const newInstances: Record<string, any> = {};
+    for (const [k, v] of Object.entries(currentInstances)) {
+      newInstances[k] = { url: v.url, credentials: { ...v.credentials } };
+    }
+    if (!newInstances[instanceName]) {
+      console.error("❌ [InstanceList] Instance not found:", instanceName);
+      return;
+    }
+    newInstances[instanceName].credentials[credentialKey] = credentialValue;
+    const updatedUser = { ...userInfo(), Instances: newInstances };
+    console.log("📤 [InstanceList] handleAddCredential — sending:", JSON.stringify(updatedUser));
+    syncUserInfo(updatedUser);
     setAddingCredentialTo(null);
     setNewCredentialKey("");
     setNewCredentialValue("");
   };
 
   const removeCredential = (instanceName: string, credentialKey: string) => {
-    console.log("Removing credential", instanceName, credentialKey);
-    const newUserInfo = { ...userInfo() };
-    delete newUserInfo.Instances[instanceName].credentials[credentialKey];
-    syncUserInfo(newUserInfo);
+    console.log("📤 [InstanceList] Removing credential", instanceName, credentialKey);
+    const currentInstances = userInfo()?.Instances || {};
+    const newInstances: Record<string, any> = {};
+    for (const [k, v] of Object.entries(currentInstances)) {
+      newInstances[k] = { url: v.url, credentials: { ...v.credentials } };
+    }
+    delete newInstances[instanceName].credentials[credentialKey];
+    syncUserInfo({ ...userInfo(), Instances: newInstances });
   };
 
   const handleLogout = () => {
