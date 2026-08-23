@@ -2,15 +2,12 @@
 FROM node:18-alpine AS build
 WORKDIR /app
 
-# Install pnpm globally
-RUN npm install -g pnpm
-
 ENV CI=true
 
 COPY . .
-RUN pnpm install --no-frozen-lockfile
+RUN yarn install --frozen-lockfile
 
-RUN pnpm run build
+RUN yarn build
 
 # Stage 2: Serve with nginx
 FROM nginx:alpine
