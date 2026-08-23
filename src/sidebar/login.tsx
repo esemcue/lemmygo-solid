@@ -53,12 +53,10 @@ const Login: Component = () => {
       if (response?.token && response?.expiresAt) {
         saveToken(response.token, response.expiresAt);
         setEmail(email());
-        // Debug: verify token was actually saved
-        const verify = localStorage.getItem("lemmygo_auth_token");
-        console.log("✅ Login complete - verifying token in localStorage:", {
+        // Debug: verify token was actually saved in cookie
+        const verify = document.cookie.includes("lemmygo_auth_token");
+        console.log("✅ Login complete - verifying token in cookies:", {
           saved: !!verify,
-          tokenLength: verify ? verify.length : 0,
-          allKeys: Object.keys(localStorage),
         });
       } else {
         console.warn("⚠️ Login response missing token or expiresAt!", {

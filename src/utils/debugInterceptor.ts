@@ -33,19 +33,18 @@ export const debugInterceptor: RpcInterceptor = {
     // Inject JWT Bearer token into metadata if available
     const storedToken = getToken();
     const hasValidToken = storedToken && isValid();
-    console.log(`🔍 Interceptor checking localStorage for "${fullName}":`, {
+    console.log(`🔍 Interceptor checking cookies for "${fullName}":`, {
       methodType: isPublicMethod ? "public" : "protected",
       tokenFound: !!storedToken,
       tokenValid: hasValidToken,
       tokenLength: storedToken ? storedToken.length : 0,
-      allStorageKeys: Object.keys(localStorage),
     });
 
     // Abort early if a protected method is called without a valid token
     if (!isPublicMethod && !hasValidToken) {
       const reason = storedToken
         ? "⚠️  Token has expired — please log in again"
-        : "⚠️  No token found in localStorage for authenticated call";
+        : "⚠️  No token found in cookies for authenticated call";
       console.warn(reason);
 
       // Create a failed call that resolves immediately with an error

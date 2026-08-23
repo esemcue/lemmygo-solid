@@ -1,6 +1,5 @@
 import { type Component, For, Show, createSignal } from "solid-js";
 import { useUserInfo } from "../store/userInfo";
-import { TbTrash } from "solid-icons/tb";
 import { IoAddCircle } from "solid-icons/io";
 import { AiFillSave } from "solid-icons/ai";
 import { clearAuth } from "../services/auth";
@@ -139,7 +138,7 @@ const InstanceList: Component = () => {
                       class="btn btn-sm btn-error btn-outline"
                       onClick={() => removeInstance(instanceKey)}
                     >
-                      <TbTrash />
+                      ✕
                     </button>
                     <h3 class="font-medium">{instanceKey}</h3>
                     <p class="text-sm text-base-content/70">{instance.url}</p>
@@ -232,7 +231,7 @@ const InstanceList: Component = () => {
                                     removeCredential(instanceKey, credentialKey)
                                   }
                                 >
-                                  <TbTrash />1
+                                  ✕
                                 </button>
                                 <strong>{credentialKey}</strong>{" "}
                               </span>

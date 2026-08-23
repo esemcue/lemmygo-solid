@@ -11,7 +11,7 @@ import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
 import { usersClient as UsersClient } from "../../grpc/users.client";
 import { UpdateUserRequest } from "../../grpc/users";
 import { debugInterceptor } from "../utils/debugInterceptor";
-import { isValid, loadAuth } from "../services/auth";
+import { isValid, loadAuth, getEmail } from "../services/auth";
 
 interface UserInfoContextType {
   userInfo: Accessor<User>;
@@ -53,7 +53,7 @@ export const UserInfoProvider = (props) => {
     }
   };
 
-  // Auto-init: validate stored token on app mount, clear if malformed
+  // Auto-init: validate stored token on mount, restore user state if valid
   onMount(() => {
     console.log("🔄 App mounted — validating stored auth...");
     const auth = loadAuth();
@@ -62,6 +62,13 @@ export const UserInfoProvider = (props) => {
       return;
     }
     console.log("✅ Auth valid on mount. Token will be attached to outgoing gRPC calls.");
+
+    // Restore minimal user info from cookies so the UI shows logged-in state
+    const storedEmail = getEmail();
+    if (storedEmail) {
+      setUserInfo({ Email: storedEmail, Password: "", Instances: {} });
+      console.log("👤 Restored user info from cookies:", { email: storedEmail });
+    }
   });
 
   const userValue = {
