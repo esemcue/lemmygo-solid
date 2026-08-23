@@ -11,6 +11,12 @@ importers:
       '@protobuf-ts/grpcweb-transport':
         specifier: ^2.9.1
         version: 2.11.1
+      '@protobuf-ts/runtime':
+        specifier: ^2.9.1
+        version: 2.11.1
+      '@protobuf-ts/runtime-rpc':
+        specifier: ^2.9.1
+        version: 2.11.1
       '@solidjs/router':
         specifier: ^0.8.2
         version: 0.8.4(solid-js@1.9.9)
@@ -29,6 +35,9 @@ importers:
       mcp-client:
         specifier: ^1.13.1
         version: 1.13.1
+      solid-icons:
+        specifier: ^1.1.0
+        version: 1.2.0(solid-js@1.9.9)
       solid-js:
         specifier: ^1.7.6
         version: 1.9.9
@@ -44,7 +53,7 @@ importers:
         version: 3.9.4
       name:
         specifier: file:grpc
-        version: grpc@file:grpc
+        version: file:grpc
       postcss:
         specifier: ^8.4.24
         version: 8.5.6
@@ -942,6 +951,7 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   global@4.4.0:
@@ -956,9 +966,6 @@ packages:
 
   grpc-web@1.5.0:
     resolution: {integrity: sha512-y1tS3BBIoiVSzKTDF3Hm7E8hV2n7YY7pO0Uo7depfWJqKzWE+SKr0jvHNIJsJJYILQlpYShpi/DRJJMbosgDMQ==}
-
-  grpc@file:grpc:
-    resolution: {directory: grpc, type: directory}
 
   has-property-descriptors@1.0.2:
     resolution: {integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==}
@@ -1192,6 +1199,9 @@ packages:
 
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
+
+  name@file:grpc:
+    resolution: {directory: grpc, type: directory}
 
   nanoid@3.3.11:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
@@ -1561,6 +1571,11 @@ packages:
         optional: true
       vite:
         optional: true
+
+  solid-icons@1.2.0:
+    resolution: {integrity: sha512-yjQxWQMi9l19P5Af9vjsvalTMDFPDL4XD6etrUdNxNVhFp1bMYF0SFwUa5VYDfJ7u0SF3Qkz/F7BZxqcLUwklw==}
+    peerDependencies:
+      solid-js: '*'
 
   solid-js@1.9.9:
     resolution: {integrity: sha512-A0ZBPJQldAeGCTW0YRYJmt7RCeh5rbFfPZ2aOttgYnctHE7HgKeHCBB/PVc2P7eOfmNXqMFFFoYYdm3S4dcbkA==}
@@ -2828,8 +2843,6 @@ snapshots:
 
   grpc-web@1.5.0: {}
 
-  grpc@file:grpc: {}
-
   has-property-descriptors@1.0.2:
     dependencies:
       es-define-property: 1.0.1
@@ -3052,6 +3065,8 @@ snapshots:
       any-promise: 1.3.0
       object-assign: 4.1.1
       thenify-all: 1.6.0
+
+  name@file:grpc: {}
 
   nanoid@3.3.11: {}
 
@@ -3452,6 +3467,10 @@ snapshots:
       vite: 4.5.14
     transitivePeerDependencies:
       - supports-color
+
+  solid-icons@1.2.0(solid-js@1.9.9):
+    dependencies:
+      solid-js: 1.9.9
 
   solid-js@1.9.9:
     dependencies:
