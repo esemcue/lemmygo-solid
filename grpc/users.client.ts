@@ -4,12 +4,16 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { users } from "./users";
+import type { RevokeTokenResponse } from "./users";
+import type { RevokeTokenRequest } from "./users";
+import type { RefreshTokenResponse } from "./users";
+import type { RefreshTokenRequest } from "./users";
+import type { GetUserResponse } from "./users";
+import type { GetUserRequest } from "./users";
 import type { UpdateUserResponse } from "./users";
 import type { UpdateUserRequest } from "./users";
 import type { RegistrationResponse } from "./users";
 import type { RegistrationRequest } from "./users";
-import type { GetUserResponse } from "./users";
-import type { GetUserRequest } from "./users";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
 import type { LoginResponse } from "./users";
 import type { LoginRequest } from "./users";
@@ -35,6 +39,14 @@ export interface IusersClient {
      * @generated from protobuf rpc: getUser(GetUserRequest) returns (GetUserResponse);
      */
     getUser(input: GetUserRequest, options?: RpcOptions): UnaryCall<GetUserRequest, GetUserResponse>;
+    /**
+     * @generated from protobuf rpc: refreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+     */
+    refreshToken(input: RefreshTokenRequest, options?: RpcOptions): UnaryCall<RefreshTokenRequest, RefreshTokenResponse>;
+    /**
+     * @generated from protobuf rpc: revokeToken(RevokeTokenRequest) returns (RevokeTokenResponse);
+     */
+    revokeToken(input: RevokeTokenRequest, options?: RpcOptions): UnaryCall<RevokeTokenRequest, RevokeTokenResponse>;
 }
 /**
  * @generated from protobuf service users
@@ -72,5 +84,19 @@ export class usersClient implements IusersClient, ServiceInfo {
     getUser(input: GetUserRequest, options?: RpcOptions): UnaryCall<GetUserRequest, GetUserResponse> {
         const method = this.methods[3], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetUserRequest, GetUserResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: refreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+     */
+    refreshToken(input: RefreshTokenRequest, options?: RpcOptions): UnaryCall<RefreshTokenRequest, RefreshTokenResponse> {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept<RefreshTokenRequest, RefreshTokenResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: revokeToken(RevokeTokenRequest) returns (RevokeTokenResponse);
+     */
+    revokeToken(input: RevokeTokenRequest, options?: RpcOptions): UnaryCall<RevokeTokenRequest, RevokeTokenResponse> {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept<RevokeTokenRequest, RevokeTokenResponse>("unary", this._transport, method, opt, input);
     }
 }

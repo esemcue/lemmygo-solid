@@ -5,7 +5,7 @@ import {
   RpcOptions,
 } from "@protobuf-ts/runtime-rpc";
 
-import { getToken, isValid } from "../services/auth";
+import { getAccessToken, isAccessTokenValid } from "../services/auth";
 
 // Methods that are publicly accessible (no auth required)
 // protobuf-ts returns method names in camelCase, so match both cases for safety
@@ -31,8 +31,8 @@ export const debugInterceptor: RpcInterceptor = {
     const isPublicMethod = PUBLIC_METHODS.has(method.name);
 
     // Inject JWT Bearer token into metadata if available
-    const storedToken = getToken();
-    const hasValidToken = storedToken && isValid();
+    const storedToken = getAccessToken();
+    const hasValidToken = storedToken && isAccessTokenValid();
     console.log(`🔍 Interceptor checking cookies for "${fullName}":`, {
       methodType: isPublicMethod ? "public" : "protected",
       tokenFound: !!storedToken,
@@ -93,11 +93,21 @@ export const debugInterceptor: RpcInterceptor = {
         console.log("✅ Response keys:", respKeys);
         respKeys.forEach((k) => {
           const v = (response as unknown as Record<string, unknown>)[k];
-          console.log(`   ${k}:`, typeof v === "string" ? `${v.substring(0, 60)}${v.length > 60 ? "..." : ""}` : v);
+          // Safe print: convert BigInt to Number for console safety
+          const safeV = typeof v === "bigint" ? Number(v) : v;
+          console.log(
+            `   ${k}:`,
+            typeof v === "string"
+              ? `${v.substring(0, 60)}${v.length > 60 ? "..." : ""}`
+              : safeV,
+          );
         });
       },
       (error) => {
-        console.error("❌ Error:", error);
+        console.error(
+          "❌ Error:",
+          error instanceof Error ? error.message : String(error),
+        );
       }
     );
 
