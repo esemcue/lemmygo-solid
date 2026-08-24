@@ -13,7 +13,7 @@ export default defineConfig({
     nodePolyfills(),
   ],
   server: {
-    host: '0.0.0.0',
+    host: '::',       // dual-stack: listens on both IPv4 (0.0.0.0) and IPv6 (::)
     port: 3000,
     strictPort: true,
   },

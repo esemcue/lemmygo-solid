@@ -2,7 +2,6 @@ import { type Component } from "solid-js";
 import { useRoutes, useLocation, A } from "@solidjs/router";
 
 import { routes } from "./routes";
-import Home from "./pages/home";
 import Login from "./sidebar/login";
 import { UserInfoProvider } from "./store/userInfo";
 
@@ -22,7 +21,7 @@ const App: Component = () => {
         </div>
         <div class="drawer-side">
           <label for="my-drawer" class="drawer-overlay"></label>
-          <ul class="menu p-4 w-80 h-full bg-base-200 text-base-content">
+          <ul class="menu p-4 w-80 h-full bg-base-200 text-base-content flex-col flex-nowrap overflow-y-auto">
             <li>
               <A href="/">Home</A>
             </li>
